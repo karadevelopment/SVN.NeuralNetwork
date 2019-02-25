@@ -90,17 +90,17 @@ namespace SVN.NeuralNetwork.Structures
             }
         }
 
-        public void UpdateWeights()
+        public void UpdateWeights(double eta, double alpha)
         {
             foreach (var node in this.Nodes)
             {
-                node.UpdateWeight();
+                node.UpdateWeight(eta, alpha);
             }
         }
 
         public override string ToString()
         {
-            return this.Nodes.Select(x => x.ToString()).Join("          ");
+            return this.Nodes.Select(x => x.ToString()).Join(Enumerable.Range(1, 10).Select(x => " ").Join(string.Empty));
         }
     }
 }

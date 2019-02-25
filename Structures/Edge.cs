@@ -14,9 +14,9 @@
             this.Weight = Network.GetRandomNumber(0, 1);
         }
 
-        public void UpdateWeight()
+        public void UpdateWeight(double eta, double alpha)
         {
-            this.WeightDelta = Network.ETA * this.Node1.OutputValue * this.Node2.Gradient + Network.ALPHA * this.WeightDelta;
+            this.WeightDelta = eta * this.Node1.OutputValue * this.Node2.Gradient + alpha * this.WeightDelta;
             this.Weight += this.WeightDelta;
         }
 

@@ -49,11 +49,11 @@ namespace SVN.NeuralNetwork.Structures
             this.Gradient = delta * this.InputValue.TransferFunctionDerivative();
         }
 
-        public void UpdateWeight()
+        public void UpdateWeight(double eta, double alpha)
         {
             foreach (var edge in this.Edges1)
             {
-                edge.UpdateWeight();
+                edge.UpdateWeight(eta, alpha);
             }
         }
 

@@ -4,7 +4,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{FB347990-AF24-4508-B66E-2E8B11921C8C}</ProjectGuid>
+    <ProjectGuid>{7CD81931-0DA8-4249-B2E5-E2B0A7FF6033}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>SVN.NeuralNetwork</RootNamespace>
@@ -30,15 +30,6 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="SVN.Core, Version=4.3.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\SVN.Core.4.3.0\lib\net46\SVN.Core.dll</HintPath>
-    </Reference>
-    <Reference Include="SVN.Debug, Version=1.0.5.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\SVN.Debug.1.0.5\lib\net46\SVN.Debug.dll</HintPath>
-    </Reference>
-    <Reference Include="SVN.Drawing, Version=4.1.4.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\SVN.Drawing.4.1.4\lib\net46\SVN.Drawing.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Drawing" />
@@ -63,7 +54,22 @@
     <Compile Include="Structures\Node.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="nuget.nuspec" />
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\SVN.Core\SVN.Core.csproj">
+      <Project>{82c01693-2843-4662-8bfc-3726f9e6f548}</Project>
+      <Name>SVN.Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\SVN.Debug\SVN.Debug.csproj">
+      <Project>{4977ffe4-f923-4204-b081-17377ff5811e}</Project>
+      <Name>SVN.Debug</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\SVN.Drawing\SVN.Drawing.csproj">
+      <Project>{d192822c-d9f1-4acc-abe6-91ac8575330a}</Project>
+      <Name>SVN.Drawing</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

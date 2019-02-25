@@ -17,31 +17,31 @@ namespace SVN.NeuralNetwork.Structures
         // 0.0 no momentum
         // 0.5 moderate momentum
 
-        public static double ETA { get; set; } = .2;
-        public static double ALPHA { get; set; } = .5;
         private static Random Random { get; } = new Random(DateTime.Now.Millisecond);
         private List<Layer> Layers { get; } = new List<Layer>();
         private int Steps { get; set; }
         private double Error { get; set; } = 1;
         private double ErrorApproximation { get; set; } = 1;
 
+        private double Eta
+        {
+            get => Math.Pow(this.ErrorApproximation, 2);
+        }
+
+        private double Alpha
+        {
+            get => 1 - this.ErrorApproximation;
+        }
+
         public bool HasLearnedEnough
         {
-            get => this.ErrorApproximation < .2;
+            get => this.ErrorApproximation < .001;
         }
 
         public Network(int firstLayerLength, int lastLayerLength)
         {
             this.AddLayer(firstLayerLength);
-            //this.AddLayer(firstLayerLength * 2 / 3 + lastLayerLength);
-            this.AddLayer(5);
-            this.AddLayer(5);
-            this.AddLayer(5);
-            this.AddLayer(5);
-            this.AddLayer(5);
-            this.AddLayer(5);
-            this.AddLayer(5);
-            this.AddLayer(5);
+            this.AddLayer(firstLayerLength * 2 / 3 + lastLayerLength);
             this.AddLayer(lastLayerLength);
             this.Connect();
         }
@@ -117,7 +117,7 @@ namespace SVN.NeuralNetwork.Structures
         {
             foreach (var layer in this.Layers.Skip(1).AsEnumerable().Reverse())
             {
-                layer.UpdateWeights();
+                layer.UpdateWeights(this.Eta, this.Alpha);
             }
         }
 
