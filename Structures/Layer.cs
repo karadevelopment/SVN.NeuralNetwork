@@ -7,31 +7,31 @@ namespace SVN.NeuralNetwork.Structures
 {
     internal class Layer
     {
-        private List<Node> Nodes { get; } = new List<Node>();
+        private List<Neuron> Neurons { get; } = new List<Neuron>();
 
-        public Layer(int nodes)
+        public Layer(int neuron)
         {
-            this.CreateNodes(nodes);
+            this.CreateNeurons(neuron);
         }
 
-        private void CreateNodes(int amount)
+        private void CreateNeurons(int amount)
         {
             for (var i = 1; i <= amount; i++)
             {
-                var node = new Node();
-                this.Nodes.Add(node);
+                var neuron = new Neuron();
+                this.Neurons.Add(neuron);
             }
             var bias = new Bias();
-            this.Nodes.Add(bias);
+            this.Neurons.Add(bias);
         }
 
         public static void Connect(Layer layer1, Layer layer2)
         {
-            foreach (var node1 in layer1.Nodes)
+            foreach (var neuron1 in layer1.Neurons)
             {
-                foreach (var node2 in layer2.Nodes.Where(x => !(x is Bias)))
+                foreach (var neuron2 in layer2.Neurons.Where(x => !(x is Bias)))
                 {
-                    Node.Connect(node1, node2);
+                    Neuron.Connect(neuron1, neuron2);
                 }
             }
         }
@@ -40,18 +40,17 @@ namespace SVN.NeuralNetwork.Structures
         {
             for (var i = 1; i <= values.Length; i++)
             {
-                var node = this.Nodes.ElementAt(i - 1);
+                var neuron = this.Neurons.ElementAt(i - 1);
                 var value = values.ElementAt(i - 1);
-                node.InputValue = value;
-                node.OutputValue = value;
+                neuron.OutputValue = value;
             }
         }
 
         public void CalculateValues()
         {
-            foreach (var node in this.Nodes)
+            foreach (var neuron in this.Neurons.Where(x => !(x is Bias)))
             {
-                node.CalculateValue();
+                neuron.CalculateValue();
             }
         }
 
@@ -61,9 +60,9 @@ namespace SVN.NeuralNetwork.Structures
 
             for (var i = 1; i <= values.Length; i++)
             {
-                var node = this.Nodes.ElementAt(i - 1);
+                var neuron = this.Neurons.ElementAt(i - 1);
                 var value = values.ElementAt(i - 1);
-                result += node.GetError(value);
+                result += neuron.GetError(value);
             }
 
             result /= values.Length;
@@ -74,9 +73,9 @@ namespace SVN.NeuralNetwork.Structures
 
         public void CalculateHiddenGradients()
         {
-            foreach (var node in this.Nodes)
+            foreach (var neuron in this.Neurons)
             {
-                node.CalculateHiddenGradient();
+                neuron.CalculateHiddenGradient();
             }
         }
 
@@ -84,23 +83,23 @@ namespace SVN.NeuralNetwork.Structures
         {
             for (var i = 1; i <= values.Length; i++)
             {
-                var node = this.Nodes.ElementAt(i - 1);
+                var neuron = this.Neurons.ElementAt(i - 1);
                 var value = values.ElementAt(i - 1);
-                node.CalculateOutputGradient(value);
+                neuron.CalculateOutputGradient(value);
             }
         }
 
         public void UpdateWeights(double eta, double alpha)
         {
-            foreach (var node in this.Nodes)
+            foreach (var neuron in this.Neurons)
             {
-                node.UpdateWeight(eta, alpha);
+                neuron.UpdateWeight(eta, alpha);
             }
         }
 
         public override string ToString()
         {
-            return this.Nodes.Select(x => x.ToString()).Join(Enumerable.Range(1, 10).Select(x => " ").Join(string.Empty));
+            return this.Neurons.Select(x => x.ToString()).Join(Enumerable.Range(1, 10).Select(x => " ").Join(string.Empty));
         }
     }
 }

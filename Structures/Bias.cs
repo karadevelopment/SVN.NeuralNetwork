@@ -1,10 +1,10 @@
 ﻿namespace SVN.NeuralNetwork.Structures
 {
-    internal class Bias : Node
+    internal class Bias : Neuron
     {
         public Bias()
         {
-            base.InputValue = 1;
+            base.OutputValue = 1;
         }
     }
 }

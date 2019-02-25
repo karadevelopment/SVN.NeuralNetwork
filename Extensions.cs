@@ -7,6 +7,9 @@ namespace SVN.NeuralNetwork
         public static double TransferFunction(this double param)
         {
             return Math.Tanh(param);
+            var value = 1;
+            var valueMax = 1 + Math.Pow(Math.E, -param);
+            return value / valueMax;
         }
 
         public static double TransferFunctionDerivative(this double param)

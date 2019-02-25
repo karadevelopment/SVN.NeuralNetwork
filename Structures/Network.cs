@@ -35,13 +35,16 @@ namespace SVN.NeuralNetwork.Structures
 
         public bool HasLearnedEnough
         {
-            get => this.ErrorApproximation < .001;
+            get => this.ErrorApproximation < .1;
         }
 
-        public Network(int firstLayerLength, int lastLayerLength)
+        public Network(int firstLayerLength, int lastLayerLength, int hiddenLayers = 2)
         {
             this.AddLayer(firstLayerLength);
-            this.AddLayer(firstLayerLength * 2 / 3 + lastLayerLength);
+            for (var i = 1; i <= hiddenLayers; i++)
+            {
+                this.AddLayer(firstLayerLength * 2 / 3 + lastLayerLength);
+            }
             this.AddLayer(lastLayerLength);
             this.Connect();
         }
@@ -53,9 +56,9 @@ namespace SVN.NeuralNetwork.Structures
             return min + diff * rnd;
         }
 
-        private void AddLayer(int nodes)
+        private void AddLayer(int neurons)
         {
-            var layer = new Layer(nodes);
+            var layer = new Layer(neurons);
             this.Layers.Add(layer);
         }
 
@@ -138,7 +141,8 @@ namespace SVN.NeuralNetwork.Structures
 
         public override string ToString()
         {
-            return $"Steps: {this.Steps:D5}\n\n{this.Layers.Select(x => x.ToString()).Join("\n")}\n\nError: {this.Error:N1}\nErrorApproximation: {this.ErrorApproximation:N1}";
+            return $"Steps: {this.Steps:D5}\nError: {this.Error:N5}\nErrorApproximation: {this.ErrorApproximation:N5}";
+            return $"Steps: {this.Steps:D5}\n\n{this.Layers.Select(x => x.ToString()).Join("\n")}\n\nError: {this.Error:N5}\nErrorApproximation: {this.ErrorApproximation:N5}";
         }
     }
 }
