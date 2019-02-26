@@ -1,4 +1,6 @@
-﻿namespace SVN.NeuralNetwork.Structures
+﻿using SVN.Core.String;
+
+namespace SVN.NeuralNetwork.Structures
 {
     internal class Connection
     {
@@ -14,16 +16,36 @@
             this.Weight = Network.GetRandomNumber(0, 1);
         }
 
-        // TODO weightdelta
+        public void Import(string data)
+        {
+            var weight = data.ParseDouble();
+            this.Weight = weight;
+        }
+
+        public string Export()
+        {
+            return this.Weight.ToString();
+        }
+        
         public void UpdateWeight(double alpha, double eta)
         {
             this.WeightDelta = this.WeightDelta * alpha + this.Neuron1.OutputValue * this.Neuron2.Gradient * eta;
             this.Weight += this.WeightDelta;
         }
 
-        public override string ToString()
+        public string ToStringLevel1()
+        {
+            return $"{this.Weight.FormatValue()}";
+        }
+
+        public string ToStringLevel2()
         {
             return $"DEL {this.WeightDelta.FormatValue()} / WEI {this.Weight.FormatValue()} / OUT {(this.Neuron1.OutputValue * this.Weight).FormatValue()}";
+        }
+
+        public override string ToString()
+        {
+            return this.ToStringLevel1();
         }
     }
 }

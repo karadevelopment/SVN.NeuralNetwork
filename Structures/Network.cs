@@ -1,8 +1,10 @@
 ﻿using SVN.Core.Collections;
 using SVN.Core.Linq;
 using SVN.Core.Number;
+using SVN.NeuralNetwork.Enums;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 
 namespace SVN.NeuralNetwork.Structures
@@ -15,6 +17,12 @@ namespace SVN.NeuralNetwork.Structures
         private double Error { get; set; } = 1;
         private double ErrorApproximation { get; set; } = 1;
 
+        public int InputLayerLength { get; set; } = 1;
+        public int HiddenLayerLength { get; set; }
+        public int OutputLayerLength { get; set; } = 1;
+        public int HiddenLayerAmount { get; set; }
+        public GuiType Type { get; set; } = GuiType.Level1;
+
         private double Alpha
         {
             get => 1 - this.ErrorApproximation;
@@ -25,20 +33,68 @@ namespace SVN.NeuralNetwork.Structures
             get => Math.Pow(this.ErrorApproximation, 2);
         }
 
-        public bool HasLearnedEnough
+        public double ErrorPercentage
         {
-            get => this.ErrorApproximation < .1;
+            get => this.ErrorApproximation * 100;
         }
 
-        public Network(int firstLayerLength, int hiddenLayerLength, int lastLayerLength, int hiddenLayerAmount)
+        public bool HasLearnedEnough
         {
-            this.AddInputLayer(firstLayerLength);
-            for (var i = 1; i <= hiddenLayerAmount; i++)
+            get => this.ErrorPercentage < 1;
+        }
+
+        public Network()
+        {
+        }
+
+        public void Import(string data)
+        {
+            var items = data.Split("\r\n\r\n\r\n").ToList();
+
+            foreach (var item in items)
             {
-                //this.AddHiddenLayer(firstLayerLength * 2 / 3 + lastLayerLength);
-                this.AddHiddenLayer(hiddenLayerLength);
+                var index = items.IndexOf(item);
+                var layer = this.Layers.ElementAt(index);
+                layer.Import(item);
             }
-            this.AddOutputLayer(lastLayerLength);
+        }
+
+        public void ImportFromFile(string path)
+        {
+            if (File.Exists(path))
+            {
+                var data = File.ReadAllText(path);
+                this.Import(data);
+            }
+        }
+
+        public string Export()
+        {
+            return this.Layers.Select(x => x.Export()).Join("\r\n\r\n\r\n");
+        }
+
+        public void ExportToFile(string path)
+        {
+            var directory = Path.GetDirectoryName(path);
+
+            if (!Directory.Exists(directory))
+            {
+                Directory.CreateDirectory(directory);
+            }
+
+            var data = this.Export();
+            File.WriteAllText(path, data);
+        }
+
+        public void Initialize()
+        {
+            this.AddInputLayer(this.InputLayerLength);
+            for (var i = 1; i <= this.HiddenLayerAmount; i++)
+            {
+                //this.AddHiddenLayer(this.InputLayerLength * 2 / 3 + this.OutputLayerLength);
+                this.AddHiddenLayer(this.HiddenLayerLength);
+            }
+            this.AddOutputLayer(this.OutputLayerLength);
             this.Connect();
         }
 
@@ -129,16 +185,51 @@ namespace SVN.NeuralNetwork.Structures
 
         public void BackPropagation(params double[] values)
         {
-            this.Steps++;
             this.CalculateError(values);
             this.CalculateGradients(values);
             this.UpdateWeights();
+            this.Steps++;
+        }
+
+        public string ToStringLevel0()
+        {
+            return $"Steps: {this.Steps}\nError: {this.Error:N5}\nErrorApproximation: {this.ErrorApproximation:N5}";
+        }
+
+        public string ToStringLevel1()
+        {
+            return $"{this.Layers.Select(x => x.ToStringLevel1()).Join("\n\n")}\n\nSteps: {this.Steps}\nAlpha: {this.Alpha:N5}\nEta: {this.Eta:N5}\nError: {this.Error:N5}\nErrorApproximation: {this.ErrorApproximation:N5}";
+        }
+
+        public string ToStringLevel2()
+        {
+            return $"{this.Layers.Select(x => x.ToStringLevel2()).Join("\n\n")}\n\nSteps: {this.Steps}\nAlpha: {this.Alpha:N5}\nEta: {this.Eta:N5}\nError: {this.Error:N5}\nErrorApproximation: {this.ErrorApproximation:N5}";
+        }
+
+        public string ToStringLevel3()
+        {
+            return $"{this.Layers.Select(x => x.ToStringLevel3()).Join("\n\n")}\n\nSteps: {this.Steps}\nAlpha: {this.Alpha:N5}\nEta: {this.Eta:N5}\nError: {this.Error:N5}\nErrorApproximation: {this.ErrorApproximation:N5}";
         }
 
         public override string ToString()
         {
-            return $"Steps: {this.Steps}\n\n{this.Layers.Select(x => x.ToString()).Join("\n")}\n\nAlpha: {this.Alpha:N5}\nEta: {this.Eta:N5}\nError: {this.Error:N5}\nErrorApproximation: {this.ErrorApproximation:N5}";
-            return $"Steps: {this.Steps}\nAlpha: {this.Alpha:N5}\nEta: {this.Eta:N5}\nError: {this.Error:N5}\nErrorApproximation: {this.ErrorApproximation:N5}";
+            if (this.Type == GuiType.Level0)
+            {
+                return this.ToStringLevel0();
+            }
+            if (this.Type == GuiType.Level1)
+            {
+                return this.ToStringLevel1();
+            }
+            if (this.Type == GuiType.Level2)
+            {
+                return this.ToStringLevel2();
+            }
+            if (this.Type == GuiType.Level3)
+            {
+                return this.ToStringLevel3();
+            }
+            return string.Empty;
         }
     }
 }

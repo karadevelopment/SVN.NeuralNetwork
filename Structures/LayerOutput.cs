@@ -37,7 +37,7 @@ namespace SVN.NeuralNetwork.Structures
 
         public override void CalculateValues()
         {
-            foreach (var neuron in base.Neurons.Where(x => x is NeuronHidden || x is NeuronOutput))
+            foreach (var neuron in base.Neurons.Where(x => x is NeuronOutput))
             {
                 neuron.CalculateValues();
             }
@@ -45,7 +45,7 @@ namespace SVN.NeuralNetwork.Structures
 
         public override void CalculateGradients(params double[] values)
         {
-            foreach (var neuron in base.Neurons.Where(x => x is NeuronHidden || x is NeuronOutput))
+            foreach (var neuron in base.Neurons.Where(x => x is NeuronOutput))
             {
                 var index = base.Neurons.IndexOf(neuron);
                 var value = values.ElementAt(index);

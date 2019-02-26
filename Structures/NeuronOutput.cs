@@ -22,7 +22,6 @@ namespace SVN.NeuralNetwork.Structures
             base.OutputValue = base.InputValue.TransferFunction();
         }
 
-        // TODO gradient
         public override void CalculateGradient(double value)
         {
             var delta = value - base.OutputValue;

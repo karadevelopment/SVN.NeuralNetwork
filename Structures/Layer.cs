@@ -13,6 +13,23 @@ namespace SVN.NeuralNetwork.Structures
             this.CreateNeurons(neurons);
         }
 
+        public void Import(string data)
+        {
+            var items = data.Split("\r\n\r\n").ToList();
+
+            foreach (var item in items)
+            {
+                var index = items.IndexOf(item);
+                var neuron = this.Neurons.ElementAt(index);
+                neuron.Import(item);
+            }
+        }
+
+        public string Export()
+        {
+            return this.Neurons.Select(x => x.Export()).Join("\r\n\r\n");
+        }
+
         protected virtual void CreateNeurons(int neurons)
         {
         }
@@ -49,9 +66,24 @@ namespace SVN.NeuralNetwork.Structures
         {
         }
 
+        public string ToStringLevel1()
+        {
+            return this.Neurons.Select(x => x.ToStringLevel1()).Join(Enumerable.Range(1, 1).Select(x => " ").Join(string.Empty));
+        }
+
+        public string ToStringLevel2()
+        {
+            return this.Neurons.Select(x => x.ToStringLevel2()).Join(Enumerable.Range(1, 5).Select(x => " ").Join(string.Empty));
+        }
+
+        public string ToStringLevel3()
+        {
+            return this.Neurons.Select(x => x.ToStringLevel3()).Join("\n");
+        }
+
         public override string ToString()
         {
-            return this.Neurons.Select(x => x.ToString()).Join(Enumerable.Range(1, 10).Select(x => " ").Join(string.Empty));
+            return this.ToStringLevel1();
         }
     }
 }

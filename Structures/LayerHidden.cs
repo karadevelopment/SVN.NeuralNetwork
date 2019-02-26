@@ -21,7 +21,7 @@ namespace SVN.NeuralNetwork.Structures
 
         public override void CalculateValues()
         {
-            foreach (var neuron in base.Neurons.Where(x => x is NeuronHidden || x is NeuronOutput))
+            foreach (var neuron in base.Neurons.Where(x => x is NeuronHidden))
             {
                 neuron.CalculateValues();
             }
@@ -29,7 +29,7 @@ namespace SVN.NeuralNetwork.Structures
 
         public override void CalculateGradients(params double[] values)
         {
-            foreach (var neuron in base.Neurons)
+            foreach (var neuron in base.Neurons.Where(x => x is NeuronHidden))
             {
                 neuron.CalculateGradient();
             }
