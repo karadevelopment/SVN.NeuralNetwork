@@ -10,38 +10,46 @@ comming soon
 - System.Drawing.Primitives (>= 4.3.0)
 
 # Example Usage (XOR)
-```using SVN.NeuralNetwork.Enums;
+```
+using SVN.NeuralNetwork.Enums;
 using SVN.NeuralNetwork.Structures;
 using System;
 
-public static class Program
+namespace AppConsole
 {
-    public static void Main(string[] args)
+    public static class Program
     {
-        var random = new Random(DateTime.Now.Millisecond);
-
-        var network = new Network
+        public static void Main(string[] args)
         {
-            InputLayerLength = 2,
-            HiddenLayerLength = 2,
-            OutputLayerLength = 1,
-            HiddenLayerAmount = 2,
-            Type = GuiType.Level3,
-        };
-        network.Initialize();
+            var random = new Random(DateTime.Now.Millisecond);
 
-        while (true)
-        {
-            Console.Clear();
-            Console.WriteLine(network);
-            Console.ReadLine();
+            var network = new Network
+            {
+                InputLayerLength = 2,
+                HiddenLayerLength = 2,
+                OutputLayerLength = 1,
+                HiddenLayerAmount = 2,
+                Type = GuiType.Level3,
+            };
+            network.Initialize();
 
-            var input1 = (int)Math.Round(random.NextDouble());
-            var input2 = (int)Math.Round(random.NextDouble());
-            var output = (input1 + input2) % 2;
+            var path = @"C:\svn\neuralnetwork\data-2.txt";
+            network.ImportFromFile(path);
 
-            network.FeedForward(input1, input2);
-            network.BackPropagation(output);
+            while (true)
+            {
+                Console.Clear();
+                Console.WriteLine(network);
+                Console.ReadLine();
+
+                var input1 = (int)Math.Round(random.NextDouble());
+                var input2 = (int)Math.Round(random.NextDouble());
+                var output = (input1 + input2) % 2;
+
+                network.FeedForward(input1, input2);
+                network.BackPropagation(output);
+                network.ExportToFile(path);
+            }
         }
     }
 }
