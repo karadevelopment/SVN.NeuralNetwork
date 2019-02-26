@@ -11,17 +11,20 @@ namespace SVN.NeuralNetwork.Structures
 {
     public class Network
     {
+        internal const string DATA_SEPARATOR = "\r\n";
         private static Random Random { get; } = new Random(DateTime.Now.Millisecond);
+
         private List<Layer> Layers { get; } = new List<Layer>();
-        private int Steps { get; set; }
-        private double Error { get; set; } = 1;
-        private double ErrorApproximation { get; set; } = 1;
 
         public int InputLayerLength { get; set; } = 1;
         public int HiddenLayerLength { get; set; }
         public int OutputLayerLength { get; set; } = 1;
         public int HiddenLayerAmount { get; set; }
         public GuiType Type { get; set; } = GuiType.Level1;
+
+        private int Steps { get; set; }
+        private double Error { get; set; } = 1;
+        private double ErrorApproximation { get; set; } = 1;
 
         private double Alpha
         {
@@ -49,7 +52,7 @@ namespace SVN.NeuralNetwork.Structures
 
         public void Import(string data)
         {
-            var items = data.Split("\r\n\r\n\r\n").ToList();
+            var items = data.Split(Enumerable.Range(1, 3).Select(x => Network.DATA_SEPARATOR).Join(string.Empty)).ToList();
 
             foreach (var item in items)
             {
@@ -70,7 +73,7 @@ namespace SVN.NeuralNetwork.Structures
 
         public string Export()
         {
-            return this.Layers.Select(x => x.Export()).Join("\r\n\r\n\r\n");
+            return this.Layers.Select(x => x.Export()).Join(Enumerable.Range(1, 3).Select(x => Network.DATA_SEPARATOR).Join(string.Empty));
         }
 
         public void ExportToFile(string path)
@@ -177,6 +180,17 @@ namespace SVN.NeuralNetwork.Structures
             }
         }
 
+        private IEnumerable<int> GetOutputValues()
+        {
+            foreach (var layer in this.Layers.Where(x => x is LayerOutput))
+            {
+                foreach (var value in layer.GetOutputValues().ToList())
+                {
+                    yield return value;
+                }
+            }
+        }
+
         public void FeedForward(params double[] values)
         {
             this.SetOutputValues(values);
@@ -189,6 +203,11 @@ namespace SVN.NeuralNetwork.Structures
             this.CalculateGradients(values);
             this.UpdateWeights();
             this.Steps++;
+        }
+
+        public void GetResults(out int[] results)
+        {
+            results = this.GetOutputValues().ToArray();
         }
 
         public string ToStringLevel0()

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SVN.Math2;
+using System;
 using System.Linq;
 
 namespace SVN.NeuralNetwork.Structures
@@ -34,6 +35,11 @@ namespace SVN.NeuralNetwork.Structures
             {
                 connection.UpdateWeight(alpha, eta);
             }
+        }
+
+        public override int? GetOutputValue()
+        {
+            return base.OutputValue.RoundToInt();
         }
     }
 }

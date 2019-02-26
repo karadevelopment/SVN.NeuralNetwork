@@ -15,7 +15,7 @@ namespace SVN.NeuralNetwork.Structures
 
         public void Import(string data)
         {
-            var items = data.Split("\r\n\r\n").ToList();
+            var items = data.Split(Enumerable.Range(1, 2).Select(x => Network.DATA_SEPARATOR).Join(string.Empty)).ToList();
 
             foreach (var item in items)
             {
@@ -27,7 +27,7 @@ namespace SVN.NeuralNetwork.Structures
 
         public string Export()
         {
-            return this.Neurons.Select(x => x.Export()).Join("\r\n\r\n");
+            return this.Neurons.Select(x => x.Export()).Join(Enumerable.Range(1, 2).Select(x => Network.DATA_SEPARATOR).Join(string.Empty));
         }
 
         protected virtual void CreateNeurons(int neurons)
@@ -64,6 +64,11 @@ namespace SVN.NeuralNetwork.Structures
 
         public virtual void UpdateWeights(double alpha, double eta)
         {
+        }
+
+        public virtual IEnumerable<int> GetOutputValues()
+        {
+            yield break;
         }
 
         public string ToStringLevel1()

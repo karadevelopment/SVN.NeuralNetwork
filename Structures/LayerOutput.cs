@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace SVN.NeuralNetwork.Structures
@@ -58,6 +59,14 @@ namespace SVN.NeuralNetwork.Structures
             foreach (var neuron in this.Neurons)
             {
                 neuron.UpdateWeight(alpha, eta);
+            }
+        }
+
+        public override IEnumerable<int> GetOutputValues()
+        {
+            foreach (var neuron in this.Neurons.Where(x => x is NeuronOutput))
+            {
+                yield return neuron.GetOutputValue().Value;
             }
         }
     }
