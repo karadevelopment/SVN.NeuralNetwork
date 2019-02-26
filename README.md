@@ -15,7 +15,7 @@ using SVN.NeuralNetwork.Enums;
 using SVN.NeuralNetwork.Structures;
 using System;
 
-namespace AppConsole
+namespace ConsoleApp1
 {
     public static class Program
     {
@@ -33,7 +33,7 @@ namespace AppConsole
             };
             network.Initialize();
 
-            var path = @"C:\svn\neuralnetwork\data-2.txt";
+            var path = @"C:\svn\neuralnetwork\data.txt";
             network.ImportFromFile(path);
 
             while (true)
