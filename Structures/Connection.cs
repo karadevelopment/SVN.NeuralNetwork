@@ -5,7 +5,7 @@
         public Neuron Neuron1 { get; }
         public Neuron Neuron2 { get; }
         public double Weight { get; private set; }
-        private double WeightDelta { get; set; } = 1;
+        private double WeightDelta { get; set; }
 
         public Connection(Neuron neuron1, Neuron neuron2)
         {
@@ -14,15 +14,16 @@
             this.Weight = Network.GetRandomNumber(0, 1);
         }
 
-        public void UpdateWeight(double eta, double alpha)
+        // TODO weightdelta
+        public void UpdateWeight(double alpha, double eta)
         {
-            this.WeightDelta = eta * this.Neuron1.OutputValue * this.Neuron2.Gradient + alpha * this.WeightDelta;
+            this.WeightDelta = this.WeightDelta * alpha + this.Neuron1.OutputValue * this.Neuron2.Gradient * eta;
             this.Weight += this.WeightDelta;
         }
 
         public override string ToString()
         {
-            return $"{this.Neuron1.OutputValue}<>{this.Neuron2.OutputValue}";
+            return $"DEL {this.WeightDelta.FormatValue()} / WEI {this.Weight.FormatValue()} / OUT {(this.Neuron1.OutputValue * this.Weight).FormatValue()}";
         }
     }
 }

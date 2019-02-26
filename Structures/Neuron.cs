@@ -1,18 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 
 namespace SVN.NeuralNetwork.Structures
 {
     internal class Neuron
     {
-        private List<Connection> Connections1 { get; } = new List<Connection>();
-        private List<Connection> Connections2 { get; } = new List<Connection>();
-        public double InputValue { get; set; }
-        public double OutputValue { get; set; }
-        public double Gradient { get; private set; }
+        protected List<Connection> Connections1 { get; } = new List<Connection>();
+        protected List<Connection> Connections2 { get; } = new List<Connection>();
+        public double InputValue { get; protected set; }
+        public double OutputValue { get; protected set; }
+        public double Gradient { get; protected set; }
 
-        public Neuron()
+        protected Neuron()
         {
         }
 
@@ -24,42 +23,34 @@ namespace SVN.NeuralNetwork.Structures
             neuron2.Connections1.Add(connection);
         }
 
-        public void CalculateValue()
+        public virtual double? GetError(double value)
         {
-            this.InputValue = this.Connections1.Select(x => x.Neuron1.OutputValue * x.Weight).Sum();
-            this.OutputValue = this.InputValue.TransferFunction();
+            return null;
         }
 
-        public double GetError(double value)
+        public virtual void SetInputValue(double value)
         {
-            var delta = value - this.OutputValue;
-            var result = Math.Pow(delta, 2);
-            return result;
         }
 
-        public void CalculateHiddenGradient()
+        public virtual void SetOutputValue(double value)
         {
-            var delta = this.Connections2.Sum(x => x.Neuron2.Gradient * x.Weight);
-            this.Gradient = delta * this.InputValue.TransferFunctionDerivative();
         }
 
-        public void CalculateOutputGradient(double value)
+        public virtual void CalculateValues()
         {
-            var delta = value - this.OutputValue;
-            this.Gradient = delta * this.InputValue.TransferFunctionDerivative();
         }
 
-        public void UpdateWeight(double eta, double alpha)
+        public virtual void CalculateGradient(double value = default(double))
         {
-            foreach (var connection in this.Connections1)
-            {
-                connection.UpdateWeight(eta, alpha);
-            }
+        }
+
+        public virtual void UpdateWeight(double alpha, double eta)
+        {
         }
 
         public override string ToString()
         {
-            return $"{this.OutputValue.FormatValue()} / {this.Gradient.FormatValue()}";
+            return $"IN {this.InputValue.FormatValue()} / OUT {this.OutputValue.FormatValue()} / GRD {this.Gradient.FormatValue()} / W_IN {this.Connections1.Select(x => x.Weight).DefaultIfEmpty(0).Average().FormatValue()} / W_OUT {this.Connections2.Select(x => x.Weight).DefaultIfEmpty(0).Average().FormatValue()}";
         }
     }
 }
