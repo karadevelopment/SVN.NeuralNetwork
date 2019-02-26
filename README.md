@@ -1,6 +1,13 @@
 # Documentation
 comming soon
 
+# Dependencies
+- .NETFramework 4.6
+- SVN.Core (>= 4.3.2)
+- SVN.Debug (>= 1.0.5)
+- SVN.Drawing (>= 4.1.4)
+- System.Drawing.Primitives (>= 4.3.0)
+
 # Example Usage (XOR)
 ```using SVN.NeuralNetwork.Enums;
 using SVN.NeuralNetwork.Structures;
