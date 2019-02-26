@@ -6,16 +6,16 @@ namespace SVN.NeuralNetwork
     {
         public static double TransferFunction(this double param)
         {
-            var value = 1;
-            var valueMax = 1 + Math.Pow(Math.E, -param);
-            return value / valueMax;
-            //return Math.Tanh(param);
+            //var value = 1;
+            //var valueMax = 1 + Math.Pow(Math.E, -param);
+            //return value / valueMax;
+            return Math.Tanh(param);
         }
 
         public static double TransferFunctionDerivative(this double param)
         {
-            return param.TransferFunction() * (1 - param.TransferFunction());
-            //return 1 - Math.Pow(Math.Tanh(param), 2);
+            //return param.TransferFunction() * (1 - param.TransferFunction());
+            return 1 - Math.Pow(Math.Tanh(param), 2);
         }
 
         public static string FormatValue(this double param, int decimals = 2)

@@ -13,7 +13,7 @@ namespace SVN.NeuralNetwork.Structures
         {
             this.Neuron1 = neuron1;
             this.Neuron2 = neuron2;
-            this.Weight = Network.GetRandomNumber(0, 1);
+            this.Weight = Network.GetRandomNumber(-3, +3);
         }
 
         public void Import(string data)

@@ -23,8 +23,8 @@ namespace SVN.NeuralNetwork.Structures
         public GuiType Type { get; set; } = GuiType.Level1;
 
         private int Steps { get; set; }
-        private double Error { get; set; } = 1;
-        private double ErrorApproximation { get; set; } = 1;
+        private double Error { get; set; } = .5;
+        private double ErrorApproximation { get; set; } = .5;
 
         private double Alpha
         {
