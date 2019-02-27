@@ -14,43 +14,44 @@ comming soon
 # Example Usage (XOR)
 ```
 using SVN.NeuralNetwork.Enums;
+using SVN.NeuralNetwork.Helpers;
 using SVN.NeuralNetwork.Structures;
 using System;
+using System.Threading;
 
-namespace ConsoleApp1
+namespace AppConsole
 {
-    public static class Program
+    public static class Program011
     {
         public static void Main(string[] args)
         {
-            var random = new Random(DateTime.Now.Millisecond);
-
             var network = new Network
             {
-                InputLayerLength = 2,
-                HiddenLayerLength = 2,
-                OutputLayerLength = 1,
-                HiddenLayerAmount = 2,
                 Type = GuiType.Level3,
             };
-            network.Initialize();
 
-            var path = @"C:\svn\neuralnetwork\data.txt";
-            network.ImportFromFile(path);
+            var data = new TrainingData();
 
-            while (true)
+            data.AddInput(0, 0);
+            data.AddOutput(0);
+
+            data.AddInput(0, 1);
+            data.AddOutput(1);
+
+            data.AddInput(1, 0);
+            data.AddOutput(1);
+
+            data.AddInput(1, 1);
+            data.AddOutput(0);
+
+            network.Initialize(data);
+            network.Train(data);
+
+            while (!Console.KeyAvailable)
             {
                 Console.Clear();
                 Console.WriteLine(network);
-                Console.ReadLine();
-
-                var input1 = (int)Math.Round(random.NextDouble());
-                var input2 = (int)Math.Round(random.NextDouble());
-                var output = (input1 + input2) % 2;
-
-                network.FeedForward(input1, input2);
-                network.BackPropagation(output);
-                network.ExportToFile(path);
+                Thread.Sleep(TimeSpan.FromSeconds(1));
             }
         }
     }
