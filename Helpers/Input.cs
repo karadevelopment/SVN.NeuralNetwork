@@ -38,7 +38,7 @@ namespace SVN.NeuralNetwork.Helpers
             }
         }
 
-        public double[] GetArray()
+        internal double[] GetArray()
         {
             return this.Pixels.Select(x => x.Sigmoid()).ToArray();
         }

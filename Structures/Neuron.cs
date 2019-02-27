@@ -71,19 +71,19 @@ namespace SVN.NeuralNetwork.Structures
             return null;
         }
 
-        public string ToStringLevel1()
+        public virtual string ToStringLevel1()
         {
             return $"{this.InputValue.FormatValue()}/{this.OutputValue.FormatValue()}";
         }
 
-        public string ToStringLevel2()
+        public virtual string ToStringLevel2()
         {
             return $"{this.InputValue.FormatValue()}/{this.OutputValue.FormatValue()}/{this.Gradient.FormatValue()}";
         }
 
-        public string ToStringLevel3()
+        public virtual string ToStringLevel3()
         {
-            return $"IN {this.InputValue.FormatValue()} / OUT {this.OutputValue.FormatValue()} / GRD {this.Gradient.FormatValue()} / W_IN {this.Connections1.Select(x => x.Weight).DefaultIfEmpty(0).Average().FormatValue()} / W_OUT {this.Connections2.Select(x => x.Weight).DefaultIfEmpty(0).Average().FormatValue()}";
+            return $"IN {this.InputValue.FormatValue()} / OUT {this.OutputValue.FormatValue()} / GRD {this.Gradient.FormatValue()} / W_IN {this.Connections1.Select(x => x.Weight).DefaultIfEmpty(0).Average().FormatValue()} / W_OUT {this.Connections2.Select(x => x.Weight).DefaultIfEmpty(0).Average().FormatValue()} ({this.GetType().Name})";
         }
 
         public override string ToString()

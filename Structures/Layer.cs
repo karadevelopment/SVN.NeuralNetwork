@@ -71,17 +71,17 @@ namespace SVN.NeuralNetwork.Structures
             yield break;
         }
 
-        public string ToStringLevel1()
+        public virtual string ToStringLevel1()
         {
             return this.Neurons.Select(x => x.ToStringLevel1()).Join(Enumerable.Range(1, 1).Select(x => " ").Join(string.Empty));
         }
 
-        public string ToStringLevel2()
+        public virtual string ToStringLevel2()
         {
             return this.Neurons.Select(x => x.ToStringLevel2()).Join(Enumerable.Range(1, 5).Select(x => " ").Join(string.Empty));
         }
 
-        public string ToStringLevel3()
+        public virtual string ToStringLevel3()
         {
             return this.Neurons.Select(x => x.ToStringLevel3()).Join("\n");
         }

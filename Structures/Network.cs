@@ -2,6 +2,8 @@
 using SVN.Core.Linq;
 using SVN.Core.Number;
 using SVN.NeuralNetwork.Enums;
+using SVN.NeuralNetwork.Helpers;
+using SVN.Tasks;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -91,6 +93,7 @@ namespace SVN.NeuralNetwork.Structures
 
         public void Initialize()
         {
+            this.ClearLayers();
             this.AddInputLayer(this.InputLayerLength);
             for (var i = 1; i <= this.HiddenLayerAmount; i++)
             {
@@ -101,11 +104,28 @@ namespace SVN.NeuralNetwork.Structures
             this.Connect();
         }
 
+        public void Initialize(TrainingData data, int hiddenLayers = 2)
+        {
+            this.ClearLayers();
+            this.AddInputLayer(data.InputLength);
+            for (var i = 1; i <= hiddenLayers; i++)
+            {
+                this.AddHiddenLayer(data.InputLength * 2 / 3 + data.OutputLength);
+            }
+            this.AddOutputLayer(data.OutputLength);
+            this.Connect();
+        }
+
         internal static double GetRandomNumber(double min, double max)
         {
             var diff = Math.Abs(max - min);
             var rnd = Network.Random.NextDouble();
             return min + diff * rnd;
+        }
+
+        private void ClearLayers()
+        {
+            this.Layers.Clear();
         }
 
         private void AddInputLayer(int neurons)
@@ -203,6 +223,24 @@ namespace SVN.NeuralNetwork.Structures
             this.CalculateGradients(values);
             this.UpdateWeights();
             this.Steps++;
+        }
+
+        public void TrainOnce(TrainingData data)
+        {
+            var (input, output) = data.Random;
+            this.FeedForward(input);
+            this.BackPropagation(output);
+        }
+
+        public void TrainFull(TrainingData data)
+        {
+            TaskContainer.Run(() =>
+            {
+                while (!this.HasLearnedEnough)
+                {
+                    this.TrainOnce(data);
+                }
+            });
         }
 
         public void GetResults(out int[] results)
