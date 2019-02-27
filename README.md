@@ -7,6 +7,7 @@ comming soon
 - SVN.Debug (>= 1.0.5)
 - SVN.Drawing (>= 4.1.4)
 - SVN.Math (>= 1.0.3)
+- SVN.Tasks (>= 1.0.3)
 - System.Drawing.Primitives (>= 4.3.0)
 
 # Example Usage (XOR)
