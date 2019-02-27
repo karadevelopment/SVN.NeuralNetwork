@@ -21,7 +21,7 @@ using System.Threading;
 
 namespace AppConsole
 {
-    public static class Program011
+    public static class Program
     {
         public static void Main(string[] args)
         {
