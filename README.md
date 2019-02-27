@@ -45,13 +45,20 @@ namespace AppConsole
             data.AddOutput(0);
 
             network.Initialize(data);
-            network.Train(data);
+            network.TrainFull(data);
 
-            while (!Console.KeyAvailable)
+            while (!network.HasLearnedEnough)
             {
                 Console.Clear();
                 Console.WriteLine(network);
                 Thread.Sleep(TimeSpan.FromSeconds(1));
+            }
+            while (true)
+            {
+                Console.Clear();
+                Console.WriteLine(network);
+                Console.ReadLine();
+                network.TrainOnce(data);
             }
         }
     }
