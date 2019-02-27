@@ -49,7 +49,6 @@
   <ItemGroup>
     <Compile Include="Enums\GuiType.cs" />
     <Compile Include="Extensions.cs" />
-    <Compile Include="Helpers\Input.cs" />
     <Compile Include="Helpers\TrainingData.cs" />
     <Compile Include="Helpers\TrainingDataInput.cs" />
     <Compile Include="Helpers\TrainingDataOutput.cs" />
