@@ -9,6 +9,7 @@ comming soon
 - SVN.Math (>= 1.0.3)
 - SVN.Tasks (>= 1.0.3)
 - System.Drawing.Primitives (>= 4.3.0)
+- System.ValueTuple (>= 4.5.0)
 
 # Example Usage (XOR)
 ```
