@@ -7,8 +7,8 @@ namespace SVN.NeuralNetwork.Helpers
 {
     public class TrainingData
     {
-        private readonly List<TrainingDataInput> Inputs = new List<TrainingDataInput>();
-        private readonly List<TrainingDataOutput> Outputs = new List<TrainingDataOutput>();
+        private List<TrainingDataInput> Inputs { get; } = new List<TrainingDataInput>();
+        private List<TrainingDataOutput> Outputs { get; } = new List<TrainingDataOutput>();
 
         public int InputLength
         {

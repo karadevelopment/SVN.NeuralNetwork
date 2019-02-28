@@ -4,7 +4,7 @@ namespace SVN.NeuralNetwork.Helpers
 {
     internal class TrainingDataInput
     {
-        public readonly List<double> Values = new List<double>();
+        public List<double> Values { get; } = new List<double>();
 
         public static TrainingDataInput Empty
         {
