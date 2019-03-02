@@ -38,11 +38,13 @@ namespace SVN.NeuralNetwork.Helpers
 
         public void AddInput(params double[] values)
         {
+            values = values.Select(x => x.Limit(0, 1)).Select(x => x * 2).Select(x => x - 1).ToArray();
             this.Inputs.Add(new TrainingDataInput(values));
         }
 
         public void AddOutput(params double[] values)
         {
+            values = values.Select(x => x.Limit(0, 1)).Select(x => x * 2).Select(x => x - 1).ToArray();
             this.Outputs.Add(new TrainingDataOutput(values));
         }
     }

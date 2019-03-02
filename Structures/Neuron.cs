@@ -16,9 +16,9 @@ namespace SVN.NeuralNetwork.Structures
         {
         }
 
-        public void Import(string data)
+        public void Import(string data, string separator)
         {
-            var items = data.Split(Enumerable.Range(1, 1).Select(x => Network.DATA_SEPARATOR).Join(string.Empty)).ToList();
+            var items = data.Split(Enumerable.Range(1, 1).Select(x => separator).Join(string.Empty)).ToList();
 
             foreach (var item in items)
             {
@@ -28,9 +28,9 @@ namespace SVN.NeuralNetwork.Structures
             }
         }
 
-        public string Export()
+        public string Export(string separator)
         {
-            return this.Connections2.Select(x => x.Export()).Join(Enumerable.Range(1, 1).Select(x => Network.DATA_SEPARATOR).Join(string.Empty));
+            return this.Connections2.Select(x => x.Export()).Join(Enumerable.Range(1, 1).Select(x => separator).Join(string.Empty));
         }
 
         public static void Connect(Neuron neuron1, Neuron neuron2)
@@ -66,29 +66,25 @@ namespace SVN.NeuralNetwork.Structures
         {
         }
 
-        public virtual int? GetOutputValue()
+        public virtual double? GetOutputValue()
         {
             return null;
         }
 
-        public virtual string ToStringLevel1()
-        {
-            return $"{this.InputValue.FormatValue()}/{this.OutputValue.FormatValue()}";
-        }
-
-        public virtual string ToStringLevel2()
-        {
-            return $"{this.InputValue.FormatValue()}/{this.OutputValue.FormatValue()}/{this.Gradient.FormatValue()}";
-        }
-
-        public virtual string ToStringLevel3()
-        {
-            return $"IN {this.InputValue.FormatValue()} / OUT {this.OutputValue.FormatValue()} / GRD {this.Gradient.FormatValue()} / W_IN {this.Connections1.Select(x => x.Weight).DefaultIfEmpty(0).Average().FormatValue()} / W_OUT {this.Connections2.Select(x => x.Weight).DefaultIfEmpty(0).Average().FormatValue()} ({this.GetType().Name})";
-        }
-
         public override string ToString()
         {
-            return this.ToStringLevel1();
+            var inputValue = this.InputValue.FormatValue();
+            var outputValue = this.OutputValue.FormatValue();
+            var gradient = this.Gradient.FormatValue();
+
+            var weights1 = this.Connections1.Select(x => x.Weight).DefaultIfEmpty(0).Average().FormatValue();
+            var weights2 = this.Connections2.Select(x => x.Weight).DefaultIfEmpty(0).Average().FormatValue();
+
+            var neuron = $"IN {inputValue} / OUT {outputValue} / GRD {gradient}";
+            var connections = $"W_IN {weights1} / W_OUT {weights2}";
+            var type = this.GetType().Name;
+
+            return $"{neuron} / {connections} | {type}";
         }
     }
 }

@@ -13,21 +13,21 @@ namespace SVN.NeuralNetwork.Structures
             this.CreateNeurons(neurons);
         }
 
-        public void Import(string data)
+        public void Import(string data, string separator)
         {
-            var items = data.Split(Enumerable.Range(1, 2).Select(x => Network.DATA_SEPARATOR).Join(string.Empty)).ToList();
+            var items = data.Split(Enumerable.Range(1, 2).Select(x => separator).Join(string.Empty)).ToList();
 
             foreach (var item in items)
             {
                 var index = items.IndexOf(item);
                 var neuron = this.Neurons.ElementAt(index);
-                neuron.Import(item);
+                neuron.Import(item, separator);
             }
         }
 
-        public string Export()
+        public string Export(string separator)
         {
-            return this.Neurons.Select(x => x.Export()).Join(Enumerable.Range(1, 2).Select(x => Network.DATA_SEPARATOR).Join(string.Empty));
+            return this.Neurons.Select(x => x.Export(separator)).Join(Enumerable.Range(1, 2).Select(x => separator).Join(string.Empty));
         }
 
         protected virtual void CreateNeurons(int neurons)
@@ -66,29 +66,14 @@ namespace SVN.NeuralNetwork.Structures
         {
         }
 
-        public virtual IEnumerable<int> GetOutputValues()
+        public virtual IEnumerable<double> GetOutputValues()
         {
             yield break;
         }
 
-        public virtual string ToStringLevel1()
-        {
-            return this.Neurons.Select(x => x.ToStringLevel1()).Join(Enumerable.Range(1, 1).Select(x => " ").Join(string.Empty));
-        }
-
-        public virtual string ToStringLevel2()
-        {
-            return this.Neurons.Select(x => x.ToStringLevel2()).Join(Enumerable.Range(1, 5).Select(x => " ").Join(string.Empty));
-        }
-
-        public virtual string ToStringLevel3()
-        {
-            return this.Neurons.Select(x => x.ToStringLevel3()).Join("\n");
-        }
-
         public override string ToString()
         {
-            return this.ToStringLevel1();
+            return this.Neurons.Select(x => $"{x}").Join("\n");
         }
     }
 }

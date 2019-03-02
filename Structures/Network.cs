@@ -1,32 +1,29 @@
 ﻿using SVN.Core.Collections;
 using SVN.Core.Linq;
-using SVN.Core.Number;
-using SVN.NeuralNetwork.Enums;
+using SVN.Math2;
 using SVN.NeuralNetwork.Helpers;
 using SVN.Tasks;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Threading;
 
 namespace SVN.NeuralNetwork.Structures
 {
     public class Network
     {
-        internal const string DATA_SEPARATOR = "\r\n";
+        private const string DATA_SEPARATOR = "\r\n";
         private static Random Random { get; } = new Random(DateTime.Now.Millisecond);
-
         private List<Layer> Layers { get; } = new List<Layer>();
+        private int Epoch { get; set; }
+        private double Error { get; set; } = .5;
+        private double ErrorApproximation { get; set; } = .5;
 
         public int InputLayerLength { get; set; } = 1;
         public int HiddenLayerLength { get; set; }
         public int OutputLayerLength { get; set; } = 1;
         public int HiddenLayerAmount { get; set; }
-        public GuiType Type { get; set; } = GuiType.Level1;
-
-        private int Steps { get; set; }
-        private double Error { get; set; } = .5;
-        private double ErrorApproximation { get; set; } = .5;
 
         private double Alpha
         {
@@ -48,6 +45,22 @@ namespace SVN.NeuralNetwork.Structures
             get => this.ErrorPercentage < 1;
         }
 
+        public int[] Results
+        {
+            get => this.GetOutputValues().Select(x => x.RoundToInt()).ToArray();
+        }
+
+        public int ResultMaxIndex
+        {
+            get
+            {
+                var results = this.GetOutputValues().ToList();
+                var resultMax = results.Max();
+                var index = results.IndexOf(resultMax);
+                return index;
+            }
+        }
+
         public Network()
         {
         }
@@ -60,7 +73,7 @@ namespace SVN.NeuralNetwork.Structures
             {
                 var index = items.IndexOf(item);
                 var layer = this.Layers.ElementAt(index);
-                layer.Import(item);
+                layer.Import(item, Network.DATA_SEPARATOR);
             }
         }
 
@@ -75,7 +88,7 @@ namespace SVN.NeuralNetwork.Structures
 
         public string Export()
         {
-            return this.Layers.Select(x => x.Export()).Join(Enumerable.Range(1, 3).Select(x => Network.DATA_SEPARATOR).Join(string.Empty));
+            return this.Layers.Select(x => x.Export(Network.DATA_SEPARATOR)).Join(Enumerable.Range(1, 3).Select(x => Network.DATA_SEPARATOR).Join(string.Empty));
         }
 
         public void ExportToFile(string path)
@@ -200,7 +213,7 @@ namespace SVN.NeuralNetwork.Structures
             }
         }
 
-        private IEnumerable<int> GetOutputValues()
+        private IEnumerable<double> GetOutputValues()
         {
             foreach (var layer in this.Layers.Where(x => x is LayerOutput))
             {
@@ -211,18 +224,18 @@ namespace SVN.NeuralNetwork.Structures
             }
         }
 
-        public void FeedForward(params double[] values)
+        private void FeedForward(params double[] values)
         {
             this.SetOutputValues(values);
             this.CalculateValues(values);
         }
 
-        public void BackPropagation(params double[] values)
+        private void BackPropagation(params double[] values)
         {
             this.CalculateError(values);
             this.CalculateGradients(values);
             this.UpdateWeights();
-            this.Steps++;
+            this.Epoch++;
         }
 
         public void TrainOnce(TrainingData data)
@@ -232,61 +245,35 @@ namespace SVN.NeuralNetwork.Structures
             this.BackPropagation(output);
         }
 
-        public void TrainFull(TrainingData data)
+        public void TrainFull(TrainingData data, TimeSpan sleepTimePerEpoch = default(TimeSpan))
         {
             TaskContainer.Run(() =>
             {
                 while (!this.HasLearnedEnough)
                 {
-                    this.TrainOnce(data);
+                    var (input, output) = data.Random;
+
+                    this.FeedForward(input);
+                    this.BackPropagation(output);
+
+                    if (sleepTimePerEpoch != default(TimeSpan))
+                    {
+                        Thread.Sleep(sleepTimePerEpoch);
+                    }
                 }
             });
         }
 
-        public void GetResults(out int[] results)
-        {
-            results = this.GetOutputValues().ToArray();
-        }
-
-        public string ToStringLevel0()
-        {
-            return $"Steps: {this.Steps}\nError: {this.Error:N5}\nErrorApproximation: {this.ErrorApproximation:N5}";
-        }
-
-        public string ToStringLevel1()
-        {
-            return $"{this.Layers.Select(x => x.ToStringLevel1()).Join("\n\n")}\n\nSteps: {this.Steps}\nAlpha: {this.Alpha:N5}\nEta: {this.Eta:N5}\nError: {this.Error:N5}\nErrorApproximation: {this.ErrorApproximation:N5}";
-        }
-
-        public string ToStringLevel2()
-        {
-            return $"{this.Layers.Select(x => x.ToStringLevel2()).Join("\n\n")}\n\nSteps: {this.Steps}\nAlpha: {this.Alpha:N5}\nEta: {this.Eta:N5}\nError: {this.Error:N5}\nErrorApproximation: {this.ErrorApproximation:N5}";
-        }
-
-        public string ToStringLevel3()
-        {
-            return $"{this.Layers.Select(x => x.ToStringLevel3()).Join("\n\n")}\n\nSteps: {this.Steps}\nAlpha: {this.Alpha:N5}\nEta: {this.Eta:N5}\nError: {this.Error:N5}\nErrorApproximation: {this.ErrorApproximation:N5}";
-        }
-
         public override string ToString()
         {
-            if (this.Type == GuiType.Level0)
-            {
-                return this.ToStringLevel0();
-            }
-            if (this.Type == GuiType.Level1)
-            {
-                return this.ToStringLevel1();
-            }
-            if (this.Type == GuiType.Level2)
-            {
-                return this.ToStringLevel2();
-            }
-            if (this.Type == GuiType.Level3)
-            {
-                return this.ToStringLevel3();
-            }
-            return string.Empty;
+            var layers = this.Layers.Select(x => $"{x}").Join("\n\n");
+            var epoch = $"Epoch: {this.Epoch}";
+            var alpha = $"Alpha: {this.Alpha:N5}";
+            var eta = $"Eta: {this.Eta:N5}";
+            var error = $"Error: {this.Error:N5}";
+            var errorApproximation = $"ErrorApproximation: {this.ErrorApproximation:N5}";
+
+            return $"{layers}\n\n{epoch}\n{alpha}\n{eta}\n{error}\n{errorApproximation}";
         }
     }
 }

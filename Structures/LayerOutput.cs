@@ -62,7 +62,7 @@ namespace SVN.NeuralNetwork.Structures
             }
         }
 
-        public override IEnumerable<int> GetOutputValues()
+        public override IEnumerable<double> GetOutputValues()
         {
             foreach (var neuron in this.Neurons.Where(x => x is NeuronOutput))
             {
