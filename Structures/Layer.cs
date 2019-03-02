@@ -34,13 +34,13 @@ namespace SVN.NeuralNetwork.Structures
         {
         }
 
-        public static void Connect(Layer layer1, Layer layer2)
+        public static void Connect(Layer layer1, Layer layer2, double initialeWeightRange)
         {
             foreach (var neuron1 in layer1.Neurons.Where(x => x is NeuronInput || x is NeuronHidden || x is NeuronBias))
             {
                 foreach (var neuron2 in layer2.Neurons.Where(x => x is NeuronHidden || x is NeuronOutput))
                 {
-                    Neuron.Connect(neuron1, neuron2);
+                    Neuron.Connect(neuron1, neuron2, initialeWeightRange);
                 }
             }
         }

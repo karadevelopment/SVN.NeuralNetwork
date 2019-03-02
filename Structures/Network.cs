@@ -24,6 +24,7 @@ namespace SVN.NeuralNetwork.Structures
         public int HiddenLayerLength { get; set; }
         public int OutputLayerLength { get; set; } = 1;
         public int HiddenLayerAmount { get; set; }
+        public double InitialeWeightRange { get; set; }
 
         private double Alpha
         {
@@ -61,8 +62,9 @@ namespace SVN.NeuralNetwork.Structures
             }
         }
 
-        public Network()
+        public Network(double initialeWeightRange = .5)
         {
+            this.InitialeWeightRange = initialeWeightRange;
         }
 
         public void Import(string data)
@@ -166,7 +168,7 @@ namespace SVN.NeuralNetwork.Structures
             {
                 if (layer1 != null)
                 {
-                    Layer.Connect(layer1, layer2);
+                    Layer.Connect(layer1, layer2, this.InitialeWeightRange);
                 }
                 layer1 = layer2;
             }

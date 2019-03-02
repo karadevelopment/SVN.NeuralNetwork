@@ -33,9 +33,9 @@ namespace SVN.NeuralNetwork.Structures
             return this.Connections2.Select(x => x.Export()).Join(Enumerable.Range(1, 1).Select(x => separator).Join(string.Empty));
         }
 
-        public static void Connect(Neuron neuron1, Neuron neuron2)
+        public static void Connect(Neuron neuron1, Neuron neuron2, double initialeWeightRange)
         {
-            var connection = new Connection(neuron1, neuron2);
+            var connection = new Connection(neuron1, neuron2, initialeWeightRange);
 
             neuron1.Connections2.Add(connection);
             neuron2.Connections1.Add(connection);
