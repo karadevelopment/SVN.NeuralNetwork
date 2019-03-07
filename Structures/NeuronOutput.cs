@@ -12,7 +12,7 @@ namespace SVN.NeuralNetwork.Structures
 
         public override double? GetError(double value)
         {
-            var delta = (value - base.OutputValue) / 2;
+            var delta = value - base.OutputValue;
             var result = Math.Pow(delta, 2);
             return result;
         }
@@ -20,13 +20,13 @@ namespace SVN.NeuralNetwork.Structures
         public override void CalculateValues()
         {
             base.InputValue = base.Connections1.Sum(x => x.Neuron1.OutputValue * x.Weight);
-            base.OutputValue = base.InputValue.Tanh();
+            base.OutputValue = base.InputValue.Sigmoid();
         }
 
         public override void CalculateGradient(double value)
         {
             var delta = value - base.OutputValue;
-            base.Gradient = delta * base.InputValue.TanhDerivative();
+            base.Gradient = delta * base.InputValue.SigmoidDerivative();
         }
 
         public override void UpdateWeight(double alpha, double eta)
@@ -35,11 +35,6 @@ namespace SVN.NeuralNetwork.Structures
             {
                 connection.UpdateWeight(alpha, eta);
             }
-        }
-
-        public override double? GetOutputValue()
-        {
-            return base.OutputValue;
         }
     }
 }

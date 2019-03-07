@@ -1,4 +1,4 @@
-﻿using SVN.Core.String;
+﻿using SVN.Math2;
 
 namespace SVN.NeuralNetwork.Structures
 {
@@ -6,25 +6,21 @@ namespace SVN.NeuralNetwork.Structures
     {
         public Neuron Neuron1 { get; }
         public Neuron Neuron2 { get; }
-        public double Weight { get; private set; }
+        public double Weight { get; set; }
         public double WeightDelta { get; private set; }
 
-        public Connection(Neuron neuron1, Neuron neuron2, double initialeWeightRange)
+        public Connection(Neuron neuron1, Neuron neuron2)
         {
             this.Neuron1 = neuron1;
             this.Neuron2 = neuron2;
-            this.Weight = Network.GetRandomNumber(-initialeWeightRange, +initialeWeightRange);
+            this.Weight = RNG.Double(-1, +1);
         }
 
-        public void Import(string data)
+        public static void Create(Neuron neuron1, Neuron neuron2)
         {
-            var weight = data.ParseDouble();
-            this.Weight = weight;
-        }
-
-        public string Export()
-        {
-            return this.Weight.ToString();
+            var connection = new Connection(neuron1, neuron2);
+            connection.Neuron1.Connections2.Add(connection);
+            connection.Neuron2.Connections1.Add(connection);
         }
 
         public void UpdateWeight(double alpha, double eta)

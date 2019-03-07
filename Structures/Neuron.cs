@@ -1,44 +1,18 @@
-﻿using SVN.Core.Linq;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 
 namespace SVN.NeuralNetwork.Structures
 {
     internal class Neuron
     {
-        protected List<Connection> Connections1 { get; } = new List<Connection>();
-        protected List<Connection> Connections2 { get; } = new List<Connection>();
+        public List<Connection> Connections1 { get; } = new List<Connection>();
+        public List<Connection> Connections2 { get; } = new List<Connection>();
         public double InputValue { get; protected set; }
-        public double OutputValue { get; protected set; }
+        public double OutputValue { get; protected set; } = 1;
         public double Gradient { get; protected set; }
 
         protected Neuron()
         {
-        }
-
-        public void Import(string data, string separator)
-        {
-            var items = data.Split(Enumerable.Range(1, 1).Select(x => separator).Join(string.Empty)).ToList();
-
-            foreach (var item in items)
-            {
-                var index = items.IndexOf(item);
-                var connection = this.Connections2.ElementAt(index);
-                connection.Import(item);
-            }
-        }
-
-        public string Export(string separator)
-        {
-            return this.Connections2.Select(x => x.Export()).Join(Enumerable.Range(1, 1).Select(x => separator).Join(string.Empty));
-        }
-
-        public static void Connect(Neuron neuron1, Neuron neuron2, double initialeWeightRange)
-        {
-            var connection = new Connection(neuron1, neuron2, initialeWeightRange);
-
-            neuron1.Connections2.Add(connection);
-            neuron2.Connections1.Add(connection);
         }
 
         public virtual double? GetError(double value)
@@ -64,11 +38,6 @@ namespace SVN.NeuralNetwork.Structures
 
         public virtual void UpdateWeight(double alpha, double eta)
         {
-        }
-
-        public virtual double? GetOutputValue()
-        {
-            return null;
         }
 
         public override string ToString()

@@ -5,7 +5,6 @@ using SVN.NeuralNetwork.Helpers;
 using SVN.Tasks;
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Threading;
 
@@ -13,18 +12,10 @@ namespace SVN.NeuralNetwork.Structures
 {
     public class Network
     {
-        private const string DATA_SEPARATOR = "\r\n";
-        private static Random Random { get; } = new Random(DateTime.Now.Millisecond);
-        private List<Layer> Layers { get; } = new List<Layer>();
-        private int Epoch { get; set; }
-        private double Error { get; set; } = .5;
-        private double ErrorApproximation { get; set; } = .5;
-
-        public int InputLayerLength { get; set; } = 1;
-        public int HiddenLayerLength { get; set; }
-        public int OutputLayerLength { get; set; } = 1;
-        public int HiddenLayerAmount { get; set; }
-        public double InitialeWeightRange { get; set; }
+        internal int Epoch { get; set; }
+        internal double Error { get; set; } = 1;
+        internal double ErrorApproximation { get; set; } = 1;
+        internal List<Layer> Layers { get; } = new List<Layer>();
 
         private double Alpha
         {
@@ -46,96 +37,17 @@ namespace SVN.NeuralNetwork.Structures
             get => this.ErrorPercentage < 1;
         }
 
-        public int[] Results
+        public Network()
         {
-            get => this.GetOutputValues().Select(x => x.RoundToInt()).ToArray();
         }
 
-        public int ResultMaxIndex
-        {
-            get
-            {
-                var results = this.GetOutputValues().ToList();
-                var resultMax = results.Max();
-                var index = results.IndexOf(resultMax);
-                return index;
-            }
-        }
-
-        public Network(double initialeWeightRange = .5)
-        {
-            this.InitialeWeightRange = initialeWeightRange;
-        }
-
-        public void Import(string data)
-        {
-            var items = data.Split(Enumerable.Range(1, 3).Select(x => Network.DATA_SEPARATOR).Join(string.Empty)).ToList();
-
-            foreach (var item in items)
-            {
-                var index = items.IndexOf(item);
-                var layer = this.Layers.ElementAt(index);
-                layer.Import(item, Network.DATA_SEPARATOR);
-            }
-        }
-
-        public void ImportFromFile(string path)
-        {
-            if (File.Exists(path))
-            {
-                var data = File.ReadAllText(path);
-                this.Import(data);
-            }
-        }
-
-        public string Export()
-        {
-            return this.Layers.Select(x => x.Export(Network.DATA_SEPARATOR)).Join(Enumerable.Range(1, 3).Select(x => Network.DATA_SEPARATOR).Join(string.Empty));
-        }
-
-        public void ExportToFile(string path)
-        {
-            var directory = Path.GetDirectoryName(path);
-
-            if (!Directory.Exists(directory))
-            {
-                Directory.CreateDirectory(directory);
-            }
-
-            var data = this.Export();
-            File.WriteAllText(path, data);
-        }
-
-        public void Initialize()
-        {
-            this.ClearLayers();
-            this.AddInputLayer(this.InputLayerLength);
-            for (var i = 1; i <= this.HiddenLayerAmount; i++)
-            {
-                //this.AddHiddenLayer(this.InputLayerLength * 2 / 3 + this.OutputLayerLength);
-                this.AddHiddenLayer(this.HiddenLayerLength);
-            }
-            this.AddOutputLayer(this.OutputLayerLength);
-            this.Connect();
-        }
-
-        public void Initialize(TrainingData data, int hiddenLayers = 2)
+        public void Initialize(TrainingData data)
         {
             this.ClearLayers();
             this.AddInputLayer(data.InputLength);
-            for (var i = 1; i <= hiddenLayers; i++)
-            {
-                this.AddHiddenLayer(data.InputLength * 2 / 3 + data.OutputLength);
-            }
+            this.AddHiddenLayer(((double)data.InputLength / (data.InputLength + 1) * 4 + data.OutputLength).RoundToInt());
             this.AddOutputLayer(data.OutputLength);
             this.Connect();
-        }
-
-        internal static double GetRandomNumber(double min, double max)
-        {
-            var diff = Math.Abs(max - min);
-            var rnd = Network.Random.NextDouble();
-            return min + diff * rnd;
         }
 
         private void ClearLayers()
@@ -168,7 +80,7 @@ namespace SVN.NeuralNetwork.Structures
             {
                 if (layer1 != null)
                 {
-                    Layer.Connect(layer1, layer2, this.InitialeWeightRange);
+                    Layer.Connect(layer1, layer2);
                 }
                 layer1 = layer2;
             }
@@ -212,17 +124,6 @@ namespace SVN.NeuralNetwork.Structures
             foreach (var layer in this.Layers.Invert())
             {
                 layer.UpdateWeights(this.Alpha, this.Eta);
-            }
-        }
-
-        private IEnumerable<double> GetOutputValues()
-        {
-            foreach (var layer in this.Layers.Where(x => x is LayerOutput))
-            {
-                foreach (var value in layer.GetOutputValues().ToList())
-                {
-                    yield return value;
-                }
             }
         }
 

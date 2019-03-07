@@ -33,9 +33,6 @@
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Drawing" />
-    <Reference Include="System.Drawing.Primitives, Version=4.0.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <HintPath>..\packages\System.Drawing.Primitives.4.3.0\lib\net45\System.Drawing.Primitives.dll</HintPath>
-    </Reference>
     <Reference Include="System.ValueTuple, Version=4.0.3.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
       <HintPath>..\packages\System.ValueTuple.4.5.0\lib\netstandard1.0\System.ValueTuple.dll</HintPath>
     </Reference>
@@ -77,12 +74,8 @@
       <Project>{4977ffe4-f923-4204-b081-17377ff5811e}</Project>
       <Name>SVN.Debug</Name>
     </ProjectReference>
-    <ProjectReference Include="..\SVN.Drawing\SVN.Drawing.csproj">
-      <Project>{d192822c-d9f1-4acc-abe6-91ac8575330a}</Project>
-      <Name>SVN.Drawing</Name>
-    </ProjectReference>
     <ProjectReference Include="..\SVN.Math\SVN.Math.csproj">
-      <Project>{00D32E34-D99C-489F-A8DB-6B96A5F05035}</Project>
+      <Project>{00d32e34-d99c-489f-a8db-6b96a5f05035}</Project>
       <Name>SVN.Math</Name>
     </ProjectReference>
     <ProjectReference Include="..\SVN.Tasks\SVN.Tasks.csproj">

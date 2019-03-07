@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 
 namespace SVN.NeuralNetwork.Structures
@@ -21,19 +20,16 @@ namespace SVN.NeuralNetwork.Structures
 
         public override double? GetError(params double[] values)
         {
-            var result = default(double);
+            var result = new List<double>();
 
             foreach (var neuron in base.Neurons.Where(x => x is NeuronOutput))
             {
                 var index = base.Neurons.IndexOf(neuron);
                 var value = values.ElementAt(index);
-                result += neuron.GetError(value).Value;
+                result.Add(neuron.GetError(value).Value);
             }
 
-            result /= values.Length;
-            result = Math.Sqrt(result);
-
-            return result;
+            return result.Average();
         }
 
         public override void CalculateValues()
@@ -59,14 +55,6 @@ namespace SVN.NeuralNetwork.Structures
             foreach (var neuron in this.Neurons)
             {
                 neuron.UpdateWeight(alpha, eta);
-            }
-        }
-
-        public override IEnumerable<double> GetOutputValues()
-        {
-            foreach (var neuron in this.Neurons.Where(x => x is NeuronOutput))
-            {
-                yield return neuron.GetOutputValue().Value;
             }
         }
     }
