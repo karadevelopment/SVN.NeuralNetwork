@@ -3,12 +3,10 @@ comming soon
 
 # Dependencies
 - .NETFramework 4.6
-- SVN.Core (>= 4.3.3)
+- SVN.Core (>= 4.3.4)
 - SVN.Debug (>= 1.0.5)
-- SVN.Drawing (>= 4.1.8)
-- SVN.Math (>= 1.0.6)
+- SVN.Math (>= 1.0.8)
 - SVN.Tasks (>= 1.0.3)
-- System.Drawing.Primitives (>= 4.3.0)
 - System.ValueTuple (>= 4.5.0)
 
 # Example Usage (XOR)
