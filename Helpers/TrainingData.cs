@@ -25,7 +25,7 @@ namespace SVN.NeuralNetwork.Helpers
             get
             {
                 var length = Math.Min(this.Inputs.Count, this.Outputs.Count);
-                var index = RNG.Int(1, length) - 1;
+                var index = Math2.Random.Range(1, length) - 1;
                 var input = this.Inputs.ElementAtOrDefault(index) ?? TrainingDataInput.Empty;
                 var output = this.Outputs.ElementAtOrDefault(index) ?? TrainingDataOutput.Empty;
                 return (input.ToArray(), output.ToArray());

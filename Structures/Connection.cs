@@ -13,7 +13,7 @@ namespace SVN.NeuralNetwork.Structures
         {
             this.Neuron1 = neuron1;
             this.Neuron2 = neuron2;
-            this.Weight = RNG.Double(-1, +1);
+            this.Weight = Random.Range(-1d, +1d);
         }
 
         public static void Create(Neuron neuron1, Neuron neuron2)
